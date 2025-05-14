@@ -1,43 +1,96 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-// Desafio Super Trunfo - Países
-// Tema 2 - Comparação das Cartas
-// Este código inicial serve como base para o desenvolvimento do sistema de comparação de cartas de cidades. 
-// Siga os comentários para implementar cada parte do desafio.
+#define TOTAL_PAISES 8
+#define ATRIBUTOS 3
+
+typedef struct {
+    char nome[30];
+    int populacao; // em milhões
+    int pib;       // em bilhões de dólares
+    int area;      // em mil km²
+} Pais;
+
+void exibirPais(Pais p) {
+    printf("País: %s\n", p.nome);
+    printf("População: %d mi\n", p.populacao);
+    printf("PIB: %d bi USD\n", p.pib);
+    printf("Área: %d mil km²\n", p.area);
+}
+
+int comparar(Pais a, Pais b, int atributo) {
+    switch (atributo) {
+        case 1: return (a.populacao > b.populacao) ? 1 : (a.populacao < b.populacao) ? -1 : 0;
+        case 2: return (a.pib > b.pib) ? 1 : (a.pib < b.pib) ? -1 : 0;
+        case 3: return (a.area > b.area) ? 1 : (a.area < b.area) ? -1 : 0;
+        default: return 0;
+    }
+}
 
 int main() {
-    // Definição das variáveis para armazenar as propriedades das cidades
-    // Você pode utilizar o código do primeiro desafio
+    srand(time(NULL));
 
-    
-    // Cadastro das Cartas:
-    // Implemente a lógica para solicitar ao usuário que insira os dados das cidades
-    // utilizando a função scanf para capturar as entradas.
-    // utilize o código do primeiro desafio
+    Pais paises[TOTAL_PAISES] = {
+        {"Brasil", 213, 1445, 8516},
+        {"EUA", 331, 22940, 9834},
+        {"China", 1441, 16862, 9597},
+        {"Rússia", 146, 1771, 17098},
+        {"Índia", 1390, 3176, 3287},
+        {"Alemanha", 83, 4254, 357},
+        {"Japão", 125, 4937, 378},
+        {"Canadá", 38, 1990, 9985}
+    };
 
-    // Exemplo:
-    // printf("Digite o código da cidade: ");
-    // scanf("%s", codigo);
-    // 
-    // (Repita para cada propriedade)
+    // Embaralhar
+    for (int i = 0; i < TOTAL_PAISES; i++) {
+        int r = rand() % TOTAL_PAISES;
+        Pais temp = paises[i];
+        paises[i] = paises[r];
+        paises[r] = temp;
+    }
 
-    // Comparação de Cartas:
-    // Desenvolva a lógica de comparação entre duas cartas.
-    // Utilize estruturas de decisão como if, if-else para comparar atributos como população, área, PIB, etc.
+    Pais jogador1[4], jogador2[4];
+    for (int i = 0; i < 4; i++) {
+        jogador1[i] = paises[i];
+        jogador2[i] = paises[i + 4];
+    }
 
-    // Exemplo:
-    // if (populacaoA > populacaoB) {
-    //     printf("Cidade 1 tem maior população.\n");
-    // } else {
-    //     printf("Cidade 2 tem maior população.\n");
-    // }
+    int pontos1 = 0, pontos2 = 0;
+    for (int i = 0; i < 4; i++) {
+        printf("\n--- Rodada %d ---\n", i + 1);
+        printf("Jogador 1:\n");
+        exibirPais(jogador1[i]);
 
-    // Exibição dos Resultados:
-    // Após realizar as comparações, exiba os resultados para o usuário.
-    // Certifique-se de que o sistema mostre claramente qual carta venceu e com base em qual atributo.
+        int escolha;
+        printf("Escolha o atributo (1 - População, 2 - PIB, 3 - Área): ");
+        scanf("%d", &escolha);
 
-    // Exemplo:
-    // printf("A cidade vencedora é: %s\n", cidadeVencedora);
+        printf("Jogador 2:\n");
+        exibirPais(jogador2[i]);
+
+        int resultado = comparar(jogador1[i], jogador2[i], escolha);
+        if (resultado > 0) {
+            printf("Jogador 1 venceu a rodada!\n");
+            pontos1++;
+        } else if (resultado < 0) {
+            printf("Jogador 2 venceu a rodada!\n");
+            pontos2++;
+        } else {
+            printf("Empate na rodada!\n");
+        }
+    }
+
+    printf("\n=== Resultado Final ===\n");
+    printf("Jogador 1: %d pontos\n", pontos1);
+    printf("Jogador 2: %d pontos\n", pontos2);
+    if (pontos1 > pontos2)
+        printf("🏆 Jogador 1 venceu o jogo!\n");
+    else if (pontos2 > pontos1)
+        printf("🏆 Jogador 2 venceu o jogo!\n");
+    else
+        printf("🤝 O jogo terminou empatado!\n");
 
     return 0;
 }
