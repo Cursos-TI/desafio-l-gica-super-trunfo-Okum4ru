@@ -4,7 +4,6 @@
 #include <time.h>
 
 #define TOTAL_PAISES 8
-#define ATRIBUTOS 3
 
 typedef struct {
     char nome[30];
@@ -20,7 +19,7 @@ void exibirPais(Pais p) {
     printf("Área: %d mil km²\n", p.area);
 }
 
-int comparar(Pais a, Pais b, int atributo) {
+int compararAtributo(Pais a, Pais b, int atributo) {
     switch (atributo) {
         case 1: return (a.populacao > b.populacao) ? 1 : (a.populacao < b.populacao) ? -1 : 0;
         case 2: return (a.pib > b.pib) ? 1 : (a.pib < b.pib) ? -1 : 0;
@@ -63,18 +62,35 @@ int main() {
         printf("Jogador 1:\n");
         exibirPais(jogador1[i]);
 
-        int escolha;
-        printf("Escolha o atributo (1 - População, 2 - PIB, 3 - Área): ");
-        scanf("%d", &escolha);
+        int escolha1, escolha2;
+        printf("Escolha dois atributos (1 - População, 2 - PIB, 3 - Área)\n");
+        printf("Primeiro atributo: ");
+        scanf("%d", &escolha1);
+        printf("Segundo atributo: ");
+        scanf("%d", &escolha2);
+
+        // Verificar se são atributos diferentes
+        while (escolha1 == escolha2 || escolha1 < 1 || escolha1 > 3 || escolha2 < 1 || escolha2 > 3) {
+            printf("Escolhas inválidas. Selecione dois atributos diferentes entre 1 e 3.\n");
+            printf("Primeiro atributo: ");
+            scanf("%d", &escolha1);
+            printf("Segundo atributo: ");
+            scanf("%d", &escolha2);
+        }
 
         printf("Jogador 2:\n");
         exibirPais(jogador2[i]);
 
-        int resultado = comparar(jogador1[i], jogador2[i], escolha);
-        if (resultado > 0) {
+        int resultado1 = compararAtributo(jogador1[i], jogador2[i], escolha1);
+        int resultado2 = compararAtributo(jogador1[i], jogador2[i], escolha2);
+
+        int vitorias1 = (resultado1 > 0) + (resultado2 > 0);
+        int vitorias2 = (resultado1 < 0) + (resultado2 < 0);
+
+        if (vitorias1 > vitorias2) {
             printf("Jogador 1 venceu a rodada!\n");
             pontos1++;
-        } else if (resultado < 0) {
+        } else if (vitorias2 > vitorias1) {
             printf("Jogador 2 venceu a rodada!\n");
             pontos2++;
         } else {
@@ -93,4 +109,3 @@ int main() {
         printf("🤝 O jogo terminou empatado!\n");
 
     return 0;
-}
